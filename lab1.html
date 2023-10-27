@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Local Storage</title>
+    <style>
+        /* Add some basic styling for the table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script type="text/javascript">
+        const localStorage = window.localStorage;
+
+        const initialize = () => {
+            if (localStorage) {
+                const count = localStorage.getItem("visitCount") || 0;
+                const newCount = parseInt(count) + 1;
+                localStorage.setItem("visitCount", newCount);
+            }
+            updateDOM();
+        };
+
+        const updateDOM = () => {
+            const count = localStorage.getItem("visitCount") || 0;
+            const storedPreferences = localStorage.getItem("preference");
+            const preference = storedPreferences
+                ? JSON.parse(storedPreferences)
+                : {};
+            document.getElementById("visitCount").innerHTML = `Visit count ${count}`;
+            document.body.style.background = preference.color || "white";
+            showAllStoredKeyValues();
+        };
+
+        const setColorPreference = color => {
+            const preference = { color }
+            localStorage.setItem("preference", JSON.stringify(preference));
+            updateDOM();
+        };
+
+        const removeCount = () => {
+            localStorage.removeItem("visitCount");
+            updateDOM();
+        };
+
+        const clearAll = () => {
+            localStorage.clear();
+            updateDOM();
+        };
+
+        const showAllStoredKeyValues = () => {
+            console.log(`we have ${localStorage.length} values`);
+            const table = document.getElementById("storedItems");
+            table.innerHTML = "";
+
+            // Header row
+            const headerRow = table.insertRow(0);
+            const headerCell1 = headerRow.insertCell(0);
+            const headerCell2 = headerRow.insertCell(1);
+            const headerCell3 = headerRow.insertCell(2);
+            headerCell1.innerHTML = "<b>Passport Picture</b>";
+            headerCell2.innerHTML = "<b>Name</b>";
+            headerCell3.innerHTML = "<b>Registration Number</b>";
+
+            for (let index = 0; index < localStorage.length; index++) {
+                const key = localStorage.key(index);
+                const value = localStorage.getItem(key);
+
+                // Create a new row
+                const row = table.insertRow(index + 1);
+
+                // Create cells for passport picture, name, and registration number
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+
+                // Add your passport picture, name, and registration number to the cells
+                // Replace the following placeholders with your actual information
+                cell1.innerHTML = "<img src='your_passport_picture_url' alt='Passport Picture' width='50' height='50'>";
+                cell2.innerHTML = "ELIUD MICHIRA SAMWEL";
+                cell3.innerHTML = "SCT222-0145/2021";
+            }
+        };
+    </script>
+</head>
+
+<body onload="initialize()">
+    <button type="button" onclick="setColorPreference('red')">Red</button>
+    <button type="button" onclick="setColorPreference('green')">Green</button>
+    <button type="button" onclick="setColorPreference('blue')">Blue</button>
+    <div id="visitCount"></div>
+    <button type="button" onclick="removeCount()">Remove count</button>
+    <button type="button" onclick="clearAll()">Clear all</button>
+
+    <!-- Table to display stored key-value pairs -->
+    <table id="storedItems"></table>
+</body>
+
+</html>
